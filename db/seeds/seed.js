@@ -112,8 +112,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
         formattedCommentsData
       );
       return db.query(insertCommentsQuery);
-    })
-    
+    }) 
 };
 
 
