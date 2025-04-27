@@ -1,6 +1,6 @@
 const db = require("../connection")
 const format = require('pg-format');
-const { convertTimestampToDate } = require("./utils");
+const { convertTimestampToDate, createArticlesLookupObject, convertTimestampToDate2 } = require("./utils");
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
   return db.query(`DROP TABLE IF EXISTS comments;`)
@@ -91,28 +91,35 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
         ];
       });
       const insertArticlesQuery = format(
-        'INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *', 
+        'INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *;', 
         formattedArticlesData
       );
       return db.query(insertArticlesQuery);
     })
-    .then(() => {
+    .then((result) => {
+
+      const articles = result.rows;
+      const articlesRefObject = createArticlesLookupObject(articles);
+
       const formattedCommentsData = commentData.map((comment) => {
         const formattedComment = convertTimestampToDate(comment);
+        const articleId = articlesRefObject[comment.article_title];
+
         return [
-          formattedComment.article_id,
+          articleId,
           formattedComment.body,
           formattedComment.votes,
           formattedComment.author,
           formattedComment.created_at,
         ];
       });
+
       const insertCommentsQuery = format(
         'INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L', 
         formattedCommentsData
       );
       return db.query(insertCommentsQuery);
-    }) 
+    });
 };
 
 

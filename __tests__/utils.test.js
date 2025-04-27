@@ -38,3 +38,32 @@ describe("convertTimestampToDate", () => {
   });
 });
 
+// describe("createRef", () => {
+//   test('should return an empty object when pased an empty array', () => {
+//     const input = [];
+//     const result = createRef(input);
+//     expect(result).toEqual({});
+//   });
+//   test("should return a ref object with a single key and value when passed an array containing a single article object", () => {
+//     const input = [
+//       {
+//         article_id: 1,
+//         title: 'Living in the shadow of a great man',
+//         topic: 'mitch',
+//         author: 'butter_bridge',
+//         body: 'I find this existence challenging',
+//         created_at: '2020-07-09T20:11:00.000Z',
+//         votes: 100,
+//         article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+//       }
+//     ]
+
+//     const result = createRef(input);
+//     expect(result).toEqual({
+//       'Living in the shadow of a great man': 1,
+//     })
+//   })
+//   test("should return a ref object with multiple keys and values", () => {
+//   })
+// });
+
