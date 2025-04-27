@@ -5,10 +5,6 @@ exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   return { created_at: new Date(created_at), ...otherProperties };
 };
 
-// simpler function to convert timestamp to date
-// exports.convertTimestampToDate2 = (timestamp) => {
-//   return timestamp ? new Date(timestamp) : undefined;
-// };
 
 exports.createArticlesLookupObject = (articlesData) => {
   if (articlesData.length === 0) {
