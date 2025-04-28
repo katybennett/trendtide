@@ -49,10 +49,10 @@ describe("GET /api/topics", () => {
   });
 });
 
-describe("GET /api/article/:article_id", () => {
+describe("GET /api/articles/:article_id", () => {
   test("status 200: responds with requested article", () => {
       return request(app)
-      .get("/api/article/1")
+      .get("/api/articles/1")
       .expect(200)
       .then(({body}) => {
           expect(body.article).toMatchObject({
@@ -71,7 +71,7 @@ describe("GET /api/article/:article_id", () => {
 
   test("status 404 - when passed a valid number but does not exist in the db", () => {
       return request(app)
-      .get("/api/article/9001")
+      .get("/api/articles/9001")
       .expect(404)
       .then(({body}) => {
           expect(body.msg).toBe("No article found under article id: 9001")
@@ -80,10 +80,44 @@ describe("GET /api/article/:article_id", () => {
 
   test("status 400 - when passed an invalid article id", () => {
       return request(app)
-      .get("/api/article/hello")
+      .get("/api/articles/hello")
       .expect(400)
       .then(({body}) => {
           expect(body.msg).toBe("Bad Request!")
       });
+  });
+});
+
+describe("GET /api/articles", () => { 
+  test("status 200: responds with all articles", () => {
+      return request(app)
+          .get("/api/articles")
+          .expect(200)
+          .then(({body}) => {
+              expect(body.articles).toHaveLength(13)
+              body.articles.forEach((article) => {
+              expect(article).toMatchObject({
+                  author: expect.any(String),
+                  title: expect.any(String),
+                  article_id: expect.any(Number),
+                  topic: expect.any(String), 
+                  created_at: expect.any(String), 
+                  votes: expect.any(Number),
+                  article_img_url: expect.any(String),
+                  comment_count: expect.any(Number),
+              });
+          });
+      });
+  });
+
+  describe('GET /api/articles', () => {
+    test("status 200: responds with all articles sorted by date in descending order", () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(( {body}) => {
+          expect(body.articles).toBeSortedBy("created_at", {descending: true})
+        });
+    });
   });
 });

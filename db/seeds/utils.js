@@ -18,3 +18,4 @@ exports.createArticlesLookupObject = (articlesData) => {
 
   return lookupObj;
 };
+

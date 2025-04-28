@@ -3,7 +3,8 @@ const app = express();
 const db = require("./db/connection");
 const { getApi, 
     getTopics,
-    getArticlesById } = require("./controllers/controllers");
+    getArticlesById,
+    getArticles } = require("./controllers/controllers");
 
 // app.use(express.json());
 
@@ -11,7 +12,9 @@ app.get("/api", getApi);
 
 app.get("/api/topics", getTopics);
 
-app.get("/api/article/:article_id", getArticlesById);
+app.get("/api/articles/:article_id", getArticlesById);
+
+app.get("/api/articles", getArticles);
 
 app.use((err, req, res, next) => {
     if(err.status && err.msg){
