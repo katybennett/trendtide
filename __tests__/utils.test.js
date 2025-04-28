@@ -97,3 +97,9 @@ describe("createArticlesLookupObject", () => {
   });
 });
 
+describe("countComments", () => {
+  test("should return total comment per given article", () => {
+    
+  })
+})
+

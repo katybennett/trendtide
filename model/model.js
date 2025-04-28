@@ -8,9 +8,7 @@ module.exports.selectTopics = () => {
 module.exports.selectArticlesById = (article_id) => {
     return db
     .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
-    // .then((result) => {
-    //     return result.rows[0];
-    // })
+
     .then(({ rows }) => {
         if (!rows.length) {
             return Promise.reject({
@@ -20,6 +18,28 @@ module.exports.selectArticlesById = (article_id) => {
         };
         return rows[0];
     });  
+};
+
+module.exports.selectArticles = () => {
+    
+    let queryString = `SELECT
+        a.author,
+        a.title,
+        a.article_id,
+        a.topic,
+        a.created_at,
+        a.votes,
+        a.article_img_url,
+        COUNT(comments.comment_id)::INT AS comment_count
+        FROM articles AS a
+        LEFT JOIN comments
+        ON comments.article_id = a.article_id
+        GROUP BY a.article_id
+        ORDER BY a.created_at DESC`;
+
+
+    return db
+    .query(queryString) 
 };
 
 
