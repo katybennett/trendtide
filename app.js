@@ -6,9 +6,9 @@ const { getApi,
     getArticles,
     getArticlesById,
     getArticleComments,
-    postComments } = require("./controllers/controllers");
+    postComment } = require("./controllers/controllers");
 
-// app.use(express.json());
+app.use(express.json());
 
 app.get("/api", getApi);
 
@@ -20,7 +20,7 @@ app.get("/api/articles/:article_id", getArticlesById);
 
 app.get("/api/articles/:article_id/comments", getArticleComments);
 
-app.post("/api/articles/:article_id/comments", postComments);
+app.post("/api/articles/:article_id/comments", postComment);
 
 app.use((err, req, res, next) => {
     if(err.status && err.msg) {
@@ -33,13 +33,12 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
 
-    const knownErrorCodes = ["22P02"];
+    const knownErrorCodes = ["22P02", "23503"];
 
     if(knownErrorCodes.includes(err.code)) {
         res.status(400).send({msg: 'Bad Request!'})
     }
     else {
-        console.log(err)
         next(err)
     };
 });
