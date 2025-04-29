@@ -164,3 +164,96 @@ describe("GET /api/articles/:article_id/comments", () => {
     });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("responds with a 201 status when newly posted comment", () => {
+    const postObj = {
+        username: 'icellusedkars',
+        body: 'Excelent Article!',
+    };
+
+    return request(app)
+        .post("/api/articles/1/comments")
+        .send(postObj)
+        .expect(201)
+        .then(({ body }) => {
+            expect(body.comment).toEqual({
+                comment_id: 19,
+                article_id: 1,
+                body: 'Excelent Article!',
+                votes: expect.any(Number),
+                author: 'icellusedkars',
+                created_at: expect.any(String),
+        });
+    });
+  });
+
+  test("responds with a 400 status when username doesn't exist", () => {
+    const postObj = {
+      username: 'NonExistentUsername',
+      body: 'Excelent Article!',
+    };
+
+    return request(app)
+        .post("/api/articles/1/comments")
+        .send(postObj)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.comment).toBe(undefined);
+            expect(body.msg).toBe("Bad Request!")
+    });
+  });
+
+
+  test("responds with a 400 Bad Request status when invalid data is passed into post object", () => {
+    const postObj = {
+      username: 123,
+      body: 456,
+    };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(postObj)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.comment).toBe(undefined);
+        expect(body.msg).toBe("Bad Request!")
+    });
+  });
+
+  describe("responds with 400 status and correct errors messages", () => {
+    test("if username is missed, responds username is required", () => {
+      const postObj = {
+        body: 'Excelent Article!',
+      };
+  
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(postObj)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.comment).toBe(undefined);
+            expect(body.errors).toEqual([
+              'username is required',
+        ]);
+      });
+    });
+  
+    test("if body is missed, responds body is required", () => {
+      const postObj = {
+        username: 'icellusedkars',
+      };
+  
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(postObj)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.comment).toBe(undefined);
+            expect(body.errors).toEqual([
+              'body is required',
+        ]);
+      });
+    });
+  });
+});
