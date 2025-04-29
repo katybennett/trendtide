@@ -1,8 +1,9 @@
 const data = require("../db/data/test-data");
 const endpointsJson = require("../endpoints.json");
 const { selectTopics,
+    selectArticles, 
     selectArticlesById,
-    selectArticles } = require("../model/model");
+    selectArticleComments } = require("../model/model");
 
 module.exports.getApi = (req, res) => {
     res.status(200).send({ endpoints: endpointsJson });
@@ -10,8 +11,8 @@ module.exports.getApi = (req, res) => {
 
 module.exports.getTopics = (req, res) => {
    
-    selectTopics().then((result) => {
-        res.status(200).send({ topics: result.rows });
+    selectTopics().then(({ rows }) => {
+        res.status(200).send({ topics: rows });
     })
     .catch((err) => {
         next(err);
@@ -36,8 +37,19 @@ module.exports.getArticles = (req, res, next) => {
         res.status(200).send({ articles: result.rows });
     })
     .catch((err) => {
-        console.log(err)
         next(err);
     });
-}
+};
+
+module.exports.getArticleComments = (req, res, next) => {
+
+    const { article_id } = req.params;
+
+    selectArticleComments(article_id).then(({ rows }) => {
+        res.status(200).send({ comments: rows }); 
+    })
+    .catch((err) => {
+        next(err);
+    });
+};
 
