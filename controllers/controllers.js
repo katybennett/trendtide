@@ -53,3 +53,8 @@ module.exports.getArticleComments = (req, res, next) => {
     });
 };
 
+module.exports.postComments = (req, res, next) => {
+
+    const {username, body } = req.body;
+    
+}
