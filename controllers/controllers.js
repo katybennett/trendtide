@@ -36,9 +36,9 @@ module.exports.getUsers = (req, res) => {
 
 module.exports.getArticles = (req, res, next) => {
 
-    const { sortBy, order } = req.query;
+    const { sortBy, order, topic } = req.query;
 
-    selectArticles(sortBy, order).then(( articles ) => {
+    selectArticles(sortBy, order, topic).then(( articles ) => {
         res.status(200).send({ articles });
     })
     .catch((err) => {
@@ -47,6 +47,7 @@ module.exports.getArticles = (req, res, next) => {
 };
 
 module.exports.getArticlesById = (req, res, next) => {
+
     const { article_id } = req.params;
 
     selectArticlesById(article_id)

@@ -19,7 +19,7 @@ module.exports.validateUpdateArticleVoteCount = (inc_votes) => {
 
     if (inc_votes === 0 || !Number.isInteger(inc_votes)) {
         errors.push("inc_vote must be an integer not equal to 0")
-    }
+    };
 
     return errors;
 

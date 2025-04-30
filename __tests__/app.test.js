@@ -215,26 +215,46 @@ describe("GET /api/articles", () => {
           expect(body.articles).toBeSortedBy("comment_count", {ascending: true})
         });
       });
+    });
+    test("status 404: when passed an invalid sort query", () => {
+      return request(app)
+      .get("/api/articles?sortBy=hello&order=desc")
+      .expect(400)
+      .then(({body}) => {
+          expect(body.msg).toBe("Invalid sort field")
+      }); 
+    });
+    test("status 404: when passed an invalid order query", () => {
+      return request(app)
+      .get("/api/articles?sortBy=created_at&order=hello")
+      .expect(400)
+      .then(({body}) => {
+          expect(body.msg).toBe("Invalid sort order")
+      }); 
     });  
   });
-  test("status 404: when passed an invalid sort query", () => {
-    return request(app)
-    .get("/api/articles?sortBy=hello&order=desc")
-    .expect(400)
-    .then(({body}) => {
-        expect(body.msg).toBe("Invalid sort field")
-    }); 
+  describe('filter queries', () => {
+    test('can return the articles by the topic value', () => {
+      return request(app)
+        .get('/api/articles?topic=mitch')
+        .expect(200)
+        .then(({body}) => {
+          expect(body.articles).toHaveLength(12);
+          body.articles.forEach(articles => {
+            expect(articles.topic).toBe('mitch')
+        });
+      });
+    });
+    test('return an empty array when topic not found', () => {
+      return request(app)
+        .get('/api/articles?topic=doesntexist')
+        .expect(200)
+        .then(({body}) => {
+          expect(body.articles).toHaveLength(0);
+        });
+      });
+    });
   });
-  test("status 404: when passed an invalid order query", () => {
-    return request(app)
-    .get("/api/articles?sortBy=created_at&order=hello")
-    .expect(400)
-    .then(({body}) => {
-        expect(body.msg).toBe("Invalid sort order")
-    }); 
-  });
-});
-
 describe("GET /api/articles/:article_id", () => {
   test("status 200: responds with requested article", () => {
       return request(app)
