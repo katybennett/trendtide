@@ -69,7 +69,7 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 
-  test("status 404 - when passed a valid number but does not exist in the db", () => {
+  test("status 404: when passed a valid number but does not exist in the db", () => {
       return request(app)
       .get("/api/articles/9001")
       .expect(404)
@@ -78,7 +78,7 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 
-  test("status 400 - when passed an invalid article id", () => {
+  test("status 400: when passed an invalid article id", () => {
       return request(app)
       .get("/api/articles/hello")
       .expect(400)
@@ -146,7 +146,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       expect(body.comments).toBeSortedBy("created_at", {descending: true})
     });
   });
-  test("status 404 - when passed a valid number but does not exist in the db", () => {
+  test("status 404: when passed a valid number but does not exist in the db", () => {
     return request(app)
     .get("/api/articles/9765/comments")
     .expect(404)
@@ -155,7 +155,7 @@ describe("GET /api/articles/:article_id/comments", () => {
     });
   });
 
-  test("status 400 - when passed an invalid article id", () => {
+  test("status 400: when passed an invalid article id", () => {
     return request(app)
     .get("/api/articles/hello/comments")
     .expect(400)
@@ -166,12 +166,11 @@ describe("GET /api/articles/:article_id/comments", () => {
 });
 
 describe("POST /api/articles/:article_id/comments", () => {
-  test("responds with a 201 status when newly posted comment", () => {
+  test("status 201: responds when newly posted comment", () => {
     const postObj = {
         username: 'icellusedkars',
         body: 'Excelent Article!',
     };
-
     return request(app)
         .post("/api/articles/1/comments")
         .send(postObj)
@@ -188,12 +187,11 @@ describe("POST /api/articles/:article_id/comments", () => {
     });
   });
 
-  test("responds with a 400 status when username doesn't exist", () => {
+  test("status 400: responds when username doesn't exist", () => {
     const postObj = {
       username: 'NonExistentUsername',
       body: 'Excelent Article!',
     };
-
     return request(app)
         .post("/api/articles/1/comments")
         .send(postObj)
@@ -205,12 +203,11 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
 
 
-  test("responds with a 400 Bad Request status when invalid data is passed into post object", () => {
+  test("status 400: Bad Request responds when invalid data is passed into post object", () => {
     const postObj = {
       username: 123,
       body: 456,
     };
-
     return request(app)
       .post("/api/articles/1/comments")
       .send(postObj)
@@ -221,12 +218,11 @@ describe("POST /api/articles/:article_id/comments", () => {
     });
   });
 
-  describe("responds with 400 status and correct errors messages", () => {
+  describe("status 400: responds with correct errors messages", () => {
     test("if username is missed, responds username is required", () => {
       const postObj = {
         body: 'Excelent Article!',
-      };
-  
+      }; 
       return request(app)
         .post("/api/articles/1/comments")
         .send(postObj)
@@ -243,7 +239,6 @@ describe("POST /api/articles/:article_id/comments", () => {
       const postObj = {
         username: 'icellusedkars',
       };
-  
       return request(app)
         .post("/api/articles/1/comments")
         .send(postObj)
@@ -253,6 +248,117 @@ describe("POST /api/articles/:article_id/comments", () => {
             expect(body.errors).toEqual([
               'body is required',
         ]);
+      });
+    });
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("status 200: response with updated article by increasing the article's votes by correct amount", () => {
+    const patchObj = {
+      inc_votes: 1
+    };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(patchObj)
+      .expect(200)
+      .then(({body}) => {
+        expect(body.updatedArticle).toMatchObject({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 101,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      });
+    });
+  });
+  test("status 200: response with updated article by descreasing the article's votes by correct amount", () => {
+    const patchObj = {
+      inc_votes: -30
+    };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(patchObj)
+      .expect(200)
+      .then(({body}) => {
+        expect(body.updatedArticle).toMatchObject({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 70,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      });
+    });
+  }); 
+  test("status 404: when passed a valid number but article does not exist in the db", () => {
+    const patchObj = {
+      inc_votes: 1
+    }
+    return request(app)
+      .patch("/api/articles/9001")
+      .send(patchObj)
+      .expect(404)
+      .then(({body}) => {
+          expect(body.msg).toBe("No article found under article id: 9001")
+    });
+  });
+
+  test("status 400: when passed an invalid data type as article id", () => {
+    const patchObj = {
+      inc_votes: 1
+    }
+    return request(app)
+      .patch("/api/articles/hello")
+      .send(patchObj)
+      .expect(400)
+      .then(({body}) => {
+          expect(body.msg).toBe("Bad Request!")
+    });
+  });
+  describe("status 400: responds with correct error message when attempting to PATCH", () => {
+    test("with valid body field but incorrent field that is not an integer", () => {
+      const patchObj = {
+        inc_votes: "8.4"
+      };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(patchObj)
+        .expect(400)
+        .then(({body}) => {
+          expect(body.updatedArticle).toBe(undefined);
+          expect(body.errors).toEqual(["inc_vote must be an integer not equal to 0"])
+      });
+    });
+    test("with valid body field but incorrent field of value cero", () => {
+      const patchObj = {
+        inc_votes: "0"
+      };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(patchObj)
+        .expect(400)
+        .then(({body}) => {
+          expect(body.updatedArticle).toBe(undefined);
+          expect(body.errors).toEqual(["inc_vote must be an integer not equal to 0"])
+      });
+    });
+    test("with a body that does not contain any field", () => {
+      const patchObj = {};
+      return request(app)
+        .patch("/api/articles/1")
+        .send(patchObj)
+        .expect(400)
+        .then(({body}) => {
+          expect(body.updatedArticle).toBe(undefined);
+          expect(body.errors).toEqual(["inc_vote must be an integer not equal to 0"])
       });
     });
   });
