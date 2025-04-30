@@ -1,8 +1,9 @@
-const { validateComment } = require("../validators/validators")
+const { validateComment,
+    validateUpdateArticleVoteCount } = require("../validators/validators")
 
 describe("validateComment function", () => {
 
-    test('should return correct errors message if both arguments are missing', () => {
+    test('should return correct errors messages if both arguments are missing', () => {
         expect(validateComment()).toEqual(["username is required", "body is required"]);
     });
 
@@ -13,14 +14,35 @@ describe("validateComment function", () => {
             
             const result = validateComment(username, body);
             expect(result).toEqual(["username is required"]);
-            });
+        });
         
-            test("if body is missed, responds with error message body is required", () => {
+        test("if body is missed, responds with error message body is required", () => {
             const username = 'OneUserName';
             const body = '';
 
             const result = validateComment(username, body);
             expect(result).toEqual(["body is required"]);
+        });
+    });
+});
+
+describe("validateUpdateArticleVoteCount function", () => {
+
+    describe('should return correct error message', () => {
+        test('if no argument passed', () => {
+            expect(validateUpdateArticleVoteCount()).toEqual(["inc_vote must be an integer not equal to 0"]);
+        });
+        test("if given cero as argument", () => {
+            const input = 0;
+            
+            const result = validateUpdateArticleVoteCount(input);
+            expect(result).toEqual(["inc_vote must be an integer not equal to 0"]);
+        });
+        test("if NOT an integer is passed", () => {
+            const input = 3.5
+
+            const result = validateUpdateArticleVoteCount(input);
+            expect(result).toEqual(["inc_vote must be an integer not equal to 0"]);
         });
     });
 });

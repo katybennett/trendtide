@@ -1,11 +1,12 @@
 const data = require("../db/data/test-data");
 const endpointsJson = require("../endpoints.json");
-const { validateComment } = require("../validators/validators")
+const { validateComment, validateUpdateArticleVoteCount } = require("../validators/validators")
 const { selectTopics,
     selectArticles, 
     selectArticlesById,
     selectArticleComments,
-    insertComment } = require("../model/model");
+    insertComment,
+    updateArticleVoteCount } = require("../model/model");
 
 module.exports.getApi = (req, res) => {
     res.status(200).send({ endpoints: endpointsJson });
@@ -67,6 +68,25 @@ module.exports.postComment = (req, res, next) => {
         insertComment(username, body, article_id)
         .then((comment) => {
             res.status(201).send( { comment })
+        })
+        .catch((err) => {
+            next(err);
+        });
+    };
+};
+
+module.exports.updateArticleById = (req, res, next) => {
+
+    const { article_id } = req.params;
+    const { inc_votes } = req.body;
+    const errors = validateUpdateArticleVoteCount(inc_votes);
+
+    if (errors.length > 0) {
+        res.status(400).send({ errors });
+    } else {
+        updateArticleVoteCount(inc_votes, article_id)
+        .then((updatedArticle) => {
+            res.status(200).send( { updatedArticle } )
         })
         .catch((err) => {
             next(err);
