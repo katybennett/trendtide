@@ -69,32 +69,58 @@ describe("GET /api/users", () => {
 
 describe("GET /api/articles", () => { 
   test("status 200: responds with all articles", () => {
-      return request(app)
-          .get("/api/articles")
-          .expect(200)
-          .then(({body}) => {
-              expect(body.articles).toHaveLength(13)
-              body.articles.forEach((article) => {
-              expect(article).toMatchObject({
-                  author: expect.any(String),
-                  title: expect.any(String),
-                  article_id: expect.any(Number),
-                  topic: expect.any(String), 
-                  created_at: expect.any(String), 
-                  votes: expect.any(Number),
-                  article_img_url: expect.any(String),
-                  comment_count: expect.any(Number),
-              });
-          });
-      });
-  });
-  test("status 200: responds with all articles sorted by date in descending order", () => {
     return request(app)
-    .get("/api/articles")
-    .expect(200)
-    .then(( {body}) => {
-      expect(body.articles).toBeSortedBy("created_at", {descending: true})
+      .get("/api/articles")
+      .expect(200)
+      .then(({body}) => {
+        expect(body.articles).toHaveLength(13)
+        body.articles.forEach((article) => {
+        expect(article).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String), 
+            created_at: expect.any(String), 
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
+        });
+      });
     });
+  });
+  describe("GET /api/articles?sort_by&order", () => {
+    test("status 200: responds with all articles sorted by date in descending order", () => {
+      return request(app)
+      .get("/api/articles?sort_by=created_at&order=desc")
+      .expect(200)
+      .then(( {body}) => {
+        expect(body.articles).toBeSortedBy("created_at", {descending: true})
+      });
+    });
+    test("status 200: responds with all articles sorted by date in asscending order", () => {
+      return request(app)
+      .get("/api/articles?sort_by=created_at&order=asc")
+      .expect(200)
+      .then(( {body}) => {
+        expect(body.articles).toBeSortedBy("created_at", {ascending: true})
+      });
+    });
+  });
+  test("status 404: when passed an invalid sort query", () => {
+    return request(app)
+    .get("/api/articles?sort_by=hello&order=desc")
+    .expect(400)
+    .then(({body}) => {
+        expect(body.msg).toBe("Invalid sort field")
+    }); 
+  });
+  test("status 404: when passed an invalid order query", () => {
+    return request(app)
+    .get("/api/articles?sort_by=created_at&order=hello")
+    .expect(400)
+    .then(({body}) => {
+        expect(body.msg).toBe("Invalid sort order")
+    }); 
   });
 });
 

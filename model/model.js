@@ -10,8 +10,26 @@ module.exports.selectTopics = () => {
     .query("SELECT * FROM users")
   };
   
-  module.exports.selectArticles = () => {
-    
+  module.exports.selectArticles = (sortBy = 'created_at', order = 'desc') => {
+
+    const validSortFields = ['created_at'];
+
+    if (!validSortFields.includes(sortBy)) {
+        return Promise.reject({
+            status: 400, 
+            msg: `Invalid sort field`
+        });
+    };
+
+    const validSortOrders = ['asc', 'desc', 'ASC', 'DESC'];
+
+    if (!validSortOrders.includes(order)) {
+        return Promise.reject({
+            status: 400, 
+            msg: `Invalid sort order`
+        });
+    };
+
     let queryString = `SELECT
         a.author,
         a.title,
@@ -24,12 +42,13 @@ module.exports.selectTopics = () => {
         FROM articles AS a
         LEFT JOIN comments
         ON comments.article_id = a.article_id
-        GROUP BY a.article_id
-        ORDER BY a.created_at DESC`;
-  
-  
+        GROUP BY a.article_id`
+
+    queryString += ` ORDER BY a.${sortBy} ${order}`;
+
     return db
-    .query(queryString) 
+        .query(queryString)
+        .then(({ rows }) => rows)
   };
   
   module.exports.selectArticlesById = (article_id) => {
