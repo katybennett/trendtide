@@ -2,7 +2,8 @@ const data = require("../db/data/test-data");
 const endpointsJson = require("../endpoints.json");
 const { validateComment, validateUpdateArticleVoteCount } = require("../validators/validators")
 const { selectTopics,
-    selectArticles, 
+    selectArticles,
+    selectUsers, 
     selectArticlesById,
     selectArticleComments,
     insertComment,
@@ -14,9 +15,29 @@ module.exports.getApi = (req, res) => {
 };
 
 module.exports.getTopics = (req, res) => {
-   
+    
     selectTopics().then(({ rows }) => {
         res.status(200).send({ topics: rows });
+    })
+    .catch((err) => {
+        next(err);
+    });
+};
+
+module.exports.getUsers = (req, res) => {
+    
+    selectUsers().then(({ rows }) => {
+        res.status(200).send({ users: rows });
+    })
+    .catch((err) => {
+        next(err);
+    });
+};
+
+module.exports.getArticles = (req, res, next) => {
+
+    selectArticles().then(({ rows }) => {
+        res.status(200).send({ articles: rows });
     })
     .catch((err) => {
         next(err);
@@ -29,16 +50,6 @@ module.exports.getArticlesById = (req, res, next) => {
     selectArticlesById(article_id)
     .then((article) => {
         res.status(200).send( { article })
-    })
-    .catch((err) => {
-        next(err);
-    });
-};
-
-module.exports.getArticles = (req, res, next) => {
-
-    selectArticles().then((result) => {
-        res.status(200).send({ articles: result.rows });
     })
     .catch((err) => {
         next(err);

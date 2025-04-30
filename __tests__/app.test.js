@@ -49,6 +49,55 @@ describe("GET /api/topics", () => {
   });
 });
 
+describe("GET /api/users", () => {
+  test("status 200: responds with all users", () => {
+    return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({body}) => {  
+            expect(body.users).toHaveLength(4)
+            body.users.forEach((users) => {
+            expect(users).toMatchObject({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            });
+        });
+    });
+  });
+});
+
+describe("GET /api/articles", () => { 
+  test("status 200: responds with all articles", () => {
+      return request(app)
+          .get("/api/articles")
+          .expect(200)
+          .then(({body}) => {
+              expect(body.articles).toHaveLength(13)
+              body.articles.forEach((article) => {
+              expect(article).toMatchObject({
+                  author: expect.any(String),
+                  title: expect.any(String),
+                  article_id: expect.any(Number),
+                  topic: expect.any(String), 
+                  created_at: expect.any(String), 
+                  votes: expect.any(Number),
+                  article_img_url: expect.any(String),
+                  comment_count: expect.any(Number),
+              });
+          });
+      });
+  });
+  test("status 200: responds with all articles sorted by date in descending order", () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(( {body}) => {
+      expect(body.articles).toBeSortedBy("created_at", {descending: true})
+    });
+  });
+});
+
 describe("GET /api/articles/:article_id", () => {
   test("status 200: responds with requested article", () => {
       return request(app)
@@ -85,37 +134,6 @@ describe("GET /api/articles/:article_id", () => {
       .then(({body}) => {
           expect(body.msg).toBe("Bad Request!")
       });
-  });
-});
-
-describe("GET /api/articles", () => { 
-  test("status 200: responds with all articles", () => {
-      return request(app)
-          .get("/api/articles")
-          .expect(200)
-          .then(({body}) => {
-              expect(body.articles).toHaveLength(13)
-              body.articles.forEach((article) => {
-              expect(article).toMatchObject({
-                  author: expect.any(String),
-                  title: expect.any(String),
-                  article_id: expect.any(Number),
-                  topic: expect.any(String), 
-                  created_at: expect.any(String), 
-                  votes: expect.any(Number),
-                  article_img_url: expect.any(String),
-                  comment_count: expect.any(Number),
-              });
-          });
-      });
-  });
-  test("status 200: responds with all articles sorted by date in descending order", () => {
-    return request(app)
-    .get("/api/articles")
-    .expect(200)
-    .then(( {body}) => {
-      expect(body.articles).toBeSortedBy("created_at", {descending: true})
-    });
   });
 });
 
