@@ -4,14 +4,12 @@
   },
   "GET /api/topics": {
     "description": "serves an array of all topics",
-    "queries": [],
     "exampleResponse": {
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
   "GET /api/users": {
     "description": "serves an array of all users",
-    "queries": [],
     "exampleResponse": {
       "topics": [
         { "username": "butter_bridge", 
@@ -23,6 +21,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
+    "queries": ["sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
