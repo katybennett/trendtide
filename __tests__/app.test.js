@@ -363,3 +363,40 @@ describe("PATCH /api/articles/:article_id", () => {
     });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("status 204: does not send a response body", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({})
+      });
+  });
+  test("status 204: responds with deleting the given comment by comment_id", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(() => {
+        return request(app)
+          .get("/api/comments/1")
+          .expect(404)
+      });
+  });
+  test("status 404: when passed a valid number but comment does not exist in the db", () => {
+    return request(app)
+    .delete("/api/comments/87654")
+    .expect(404)
+    .then(({body}) => {
+        expect(body.msg).toBe("No comment found under comment id: 87654")
+    });
+  });
+  test("status 400: when passed an invalid comment id", () => {
+    return request(app)
+    .delete("/api/comments/hello")
+    .expect(400)
+    .then(({body}) => {
+        expect(body.msg).toBe("Bad Request!")
+    });
+  });
+});
