@@ -10,7 +10,7 @@ module.exports.selectTopics = () => {
     .query("SELECT * FROM users")
   };
   
-  module.exports.selectArticles = (sortBy = 'created_at', order = 'desc') => {
+  module.exports.selectArticles = (sortBy = 'created_at', order = 'desc', topic = null ) => {
 
     const validSortFields = ['created_at', 'article_id', 'title', 'topic', 'author', 'votes', 'comment_count'];
 
@@ -30,6 +30,13 @@ module.exports.selectTopics = () => {
         });
     };
 
+    let where = '';
+    const queryParams = [];
+    if (topic) {
+        where += ` WHERE a.topic = $1`;
+        queryParams.push(topic)
+    }
+
     let queryString = `SELECT
         a.author,
         a.title,
@@ -42,12 +49,12 @@ module.exports.selectTopics = () => {
         FROM articles AS a
         LEFT JOIN comments AS c
         ON c.article_id = a.article_id
-        GROUP BY a.article_id`
-
-    queryString += ` ORDER BY ${sortBy} ${order}`;
+        ${where}
+        GROUP BY a.article_id
+        ORDER BY ${sortBy} ${order}`;
 
     return db
-        .query(queryString)
+        .query(queryString, queryParams)
         .then(({ rows }) => rows)
   };
   
