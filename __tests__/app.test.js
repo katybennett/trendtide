@@ -88,9 +88,9 @@ describe("GET /api/articles", () => {
       });
     });
   });
-  describe("GET /api/articles?sortBy&order", () => {
-    describe("GET //api/articles?sortBy=created_at&order", () => {
-      test("status 200: responds with all articles sorted by date in descending order", () => {
+  describe("queries sortBy&order", () => {
+    describe("created at", () => {
+      test("can sort by date in descending order", () => {
         return request(app)
         .get("/api/articles?sortBy=created_at&order=desc")
         .expect(200)
@@ -98,7 +98,7 @@ describe("GET /api/articles", () => {
           expect(body.articles).toBeSortedBy("created_at", {descending: true})
         });
       });
-      test("status 200: responds with all articles sorted by date in ascending order", () => {
+      test("can sort sort by date in ascending order", () => {
         return request(app)
         .get("/api/articles?sortBy=created_at&order=asc")
         .expect(200)
@@ -107,8 +107,8 @@ describe("GET /api/articles", () => {
         });
       });
     });
-    describe("GET /api/articles?sortBy=article_id&order", () => {
-      test("status 200: responds with all articles sorted by article id in descending order", () => {
+    describe("article_id", () => {
+      test("can sort by article id in descending order", () => {
         return request(app)
         .get("/api/articles?sortBy=article_id&order=desc")
         .expect(200)
@@ -116,7 +116,7 @@ describe("GET /api/articles", () => {
           expect(body.articles).toBeSortedBy("article_id", {descending: true})
         });
       });
-      test("status 200: responds with all articles sorted by article_id in ascending order", () => {
+      test("can sort by article id in ascending order", () => {
         return request(app)
         .get("/api/articles?sortBy=article_id&order=asc")
         .expect(200)
@@ -125,8 +125,8 @@ describe("GET /api/articles", () => {
         });
       });
     });
-    describe("GET /api/articles?sortBy=title&order", () => {
-      test("status 200: responds with all articles sorted by title in descending order", () => {
+    describe("title", () => {
+      test("can sort by title in descending order", () => {
         return request(app)
         .get("/api/articles?sortBy=title&order=desc")
         .expect(200)
@@ -134,7 +134,7 @@ describe("GET /api/articles", () => {
           expect(body.articles).toBeSortedBy("title", {descending: true})
         });
       });
-      test("status 200: responds with all articles sorted by title in ascending order", () => {
+      test("can sort by title in ascending order", () => {
         return request(app)
         .get("/api/articles?sortBy=title&order=asc")
         .expect(200)
@@ -144,8 +144,8 @@ describe("GET /api/articles", () => {
         });
       });
     });
-    describe("GET /api/articles?sortBy=topic&order", () => {
-      test("status 200: responds with all articles sorted by topic in descending order", () => {
+    describe("topic", () => {
+      test("can sort by topic in descending order", () => {
         return request(app)
         .get("/api/articles?sortBy=topic&order=desc")
         .expect(200)
@@ -153,7 +153,7 @@ describe("GET /api/articles", () => {
           expect(body.articles).toBeSortedBy("topic", {descending: true})
         });
       });
-      test("status 200: responds with all articles sorted by topic in ascending order", () => {
+      test("can sort by topic in ascending order", () => {
         return request(app)
         .get("/api/articles?sortBy=topic&order=asc")
         .expect(200)
@@ -162,8 +162,8 @@ describe("GET /api/articles", () => {
         });
       });
     });
-    describe("GET /api/articles?sortBy=author&order", () => {
-      test("status 200: responds with all articles sorted by author in descending order", () => {
+    describe("author", () => {
+      test("can sort by author in descending order", () => {
         return request(app)
         .get("/api/articles?sortBy=author&order=desc")
         .expect(200)
@@ -171,7 +171,7 @@ describe("GET /api/articles", () => {
           expect(body.articles).toBeSortedBy("author", {descending: true})
         });
       });
-      test("status 200: responds with all articles sorted by author in ascending order", () => {
+      test("can sort by author in ascending order", () => {
         return request(app)
         .get("/api/articles?sortBy=author&order=asc")
         .expect(200)
@@ -180,8 +180,8 @@ describe("GET /api/articles", () => {
         });
       });
     });
-    describe("GET /api/articles?sortBy=votes&order", () => {
-      test("status 200: responds with all articles sorted by votes in descending order", () => {
+    describe("votes", () => {
+      test("can sort by votes in descending order", () => {
         return request(app)
         .get("/api/articles?sortBy=votes&order=desc")
         .expect(200)
@@ -189,7 +189,7 @@ describe("GET /api/articles", () => {
           expect(body.articles).toBeSortedBy("votes", {descending: true})
         });
       });
-      test("status 200: responds with all articles sorted by votes in ascending order", () => {
+      test("can sort by votes in ascending order", () => {
         return request(app)
         .get("/api/articles?sortBy=votes&order=asc")
         .expect(200)
@@ -198,8 +198,8 @@ describe("GET /api/articles", () => {
         });
       });
     });
-    describe("GET /api/articles?sortBy=comment_count&order", () => {
-      test("status 200: responds with all articles sorted by comment_count in descending order", () => {
+    describe("comment count", () => {
+      test("can sort by comment count in descending order", () => {
         return request(app)
         .get("/api/articles?sortBy=comment_count&order=desc")
         .expect(200)
@@ -207,7 +207,7 @@ describe("GET /api/articles", () => {
           expect(body.articles).toBeSortedBy("comment_count", {descending: true})
         });
       });
-      test("status 200: responds with all articles sorted by comment_count in ascending order", () => {
+      test("can sort by comment count in ascending order", () => {
         return request(app)
         .get("/api/articles?sortBy=comment_count&order=asc")
         .expect(200)
