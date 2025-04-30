@@ -12,7 +12,7 @@ module.exports.selectTopics = () => {
   
   module.exports.selectArticles = (sortBy = 'created_at', order = 'desc') => {
 
-    const validSortFields = ['created_at'];
+    const validSortFields = ['created_at', 'article_id', 'title', 'topic', 'author', 'votes', 'comment_count'];
 
     if (!validSortFields.includes(sortBy)) {
         return Promise.reject({
@@ -38,13 +38,13 @@ module.exports.selectTopics = () => {
         a.created_at,
         a.votes,
         a.article_img_url,
-        COUNT(comments.comment_id)::INT AS comment_count
+        COUNT(c.comment_id)::INT AS comment_count
         FROM articles AS a
-        LEFT JOIN comments
-        ON comments.article_id = a.article_id
+        LEFT JOIN comments AS c
+        ON c.article_id = a.article_id
         GROUP BY a.article_id`
 
-    queryString += ` ORDER BY a.${sortBy} ${order}`;
+    queryString += ` ORDER BY ${sortBy} ${order}`;
 
     return db
         .query(queryString)
