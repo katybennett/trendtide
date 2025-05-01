@@ -34,35 +34,58 @@ describe("GET /api", () => {
 
 describe("GET /api/topics", () => { 
   test("status 200: responds with all topics", () => {
-      return request(app)
-          .get("/api/topics")
-          .expect(200)
-          .then(({body}) => {    
-              expect(body.topics).toHaveLength(3)
-              body.topics.forEach((topic) => {
-              expect(topic).toMatchObject({
-                  slug: expect.any(String),
-                  description: expect.any(String),
-              });
-          });
+    return request(app)
+      .get("/api/topics")
+      .expect(200)
+      .then(({body}) => {    
+        expect(body.topics).toHaveLength(3)
+        body.topics.forEach((topic) => {
+        expect(topic).toMatchObject({
+            slug: expect.any(String),
+            description: expect.any(String),
+        });
       });
+    });
   });
 });
 
 describe("GET /api/users", () => {
   test("status 200: responds with all users", () => {
     return request(app)
-        .get("/api/users")
-        .expect(200)
-        .then(({body}) => {  
-            expect(body.users).toHaveLength(4)
-            body.users.forEach((users) => {
-            expect(users).toMatchObject({
-              username: expect.any(String),
-              name: expect.any(String),
-              avatar_url: expect.any(String),
-            });
+      .get("/api/users")
+      .expect(200)
+      .then(({body}) => {  
+        expect(body.users).toHaveLength(4)
+        body.users.forEach((users) => {
+        expect(users).toMatchObject({
+          username: expect.any(String),
+          name: expect.any(String),
+          avatar_url: expect.any(String),
         });
+      });
+    });
+  });
+});
+
+describe("GET /api/users/:username", () => {
+  test("status 200: responds with requested user", () => {
+    return request(app)
+      .get("/api/users/butter_bridge")
+      .expect(200)
+      .then(({body}) => {
+        expect(body).toMatchObject({
+          username: "butter_bridge",
+          name: "jonny",
+          avatar_url: expect.any(String),
+      });
+    });
+  });
+  test("status 404: when passed an unvalid username", () => {
+    return request(app)
+      .get("/api/users/no-valid-username")
+      .expect(404)
+      .then(({body}) => {
+          expect(body.msg).toBe("No username found under: no-valid-username")
     });
   });
 });

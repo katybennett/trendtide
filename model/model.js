@@ -10,6 +10,21 @@ module.exports.selectUsers = () => {
     return db
     .query("SELECT * FROM users")
 };
+
+
+module.exports.selectUsersById = (username) => {
+    return db
+    .query("SELECT * FROM users WHERE username = $1", [username])
+    .then(({ rows }) => {
+        if (!rows.length) {
+            return Promise.reject({
+                status: 404, 
+                msg: `No username found under: ${username}`
+            });
+        };
+        return rows[0];
+    });
+};
   
 
 module.exports.selectArticles = (sortBy = 'created_at', order = 'desc', topic = null ) => {
