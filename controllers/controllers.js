@@ -8,7 +8,8 @@ const { selectTopics,
     selectArticleComments,
     insertComment,
     updateArticleVoteCount, 
-    deleteCommentById} = require("../model/model");
+    deleteCommentById,
+    selectUsersById} = require("../model/model");
 
 module.exports.getApi = (req, res) => {
     res.status(200).send({ endpoints: endpointsJson });
@@ -28,6 +29,19 @@ module.exports.getUsers = (req, res) => {
     
     selectUsers().then(({ rows }) => {
         res.status(200).send({ users: rows });
+    })
+    .catch((err) => {
+        next(err);
+    });
+};
+
+module.exports.getUsersById = (req, res, next) => {
+
+    const { username } = req.params;
+
+    selectUsersById(username)
+    .then((user) => {
+        res.status(200).send(user)
     })
     .catch((err) => {
         next(err);

@@ -9,7 +9,9 @@ const { getApi,
     getArticleComments,
     postComment,
     updateArticleById, 
-    deleteComment} = require("./controllers/controllers");
+    deleteComment,
+    getUSersById,
+    getUsersById} = require("./controllers/controllers");
 
 app.use(express.json());
 
@@ -18,6 +20,8 @@ app.get("/api", getApi);
 app.get("/api/topics", getTopics);
 
 app.get("/api/users", getUsers);
+
+app.get("/api/users/:username", getUsersById);
 
 app.get("/api/articles", getArticles);
 
