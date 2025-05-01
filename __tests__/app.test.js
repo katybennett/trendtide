@@ -251,13 +251,14 @@ describe("GET /api/articles", () => {
         .expect(200)
         .then(({body}) => {
           expect(body.articles).toHaveLength(0);
-        });
       });
     });
   });
+});
+
 describe("GET /api/articles/:article_id", () => {
   test("status 200: responds with requested article", () => {
-      return request(app)
+    return request(app)
       .get("/api/articles/1")
       .expect(200)
       .then(({body}) => {
@@ -269,12 +270,11 @@ describe("GET /api/articles/:article_id", () => {
             body: "I find this existence challenging",
             created_at: "2020-07-09T20:11:00.000Z",
             votes: 100,
-            article_img_url:
-              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-          });
-      });
+            article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            comment_count: 11,
+    });
   });
-
+});
   test("status 404: when passed a valid number but does not exist in the db", () => {
       return request(app)
       .get("/api/articles/9001")
@@ -297,28 +297,28 @@ describe("GET /api/articles/:article_id", () => {
 describe("GET /api/articles/:article_id/comments", () => {
   test("status 200: responds with all comments for requested article", () => {
       return request(app)
-      .get("/api/articles/1/comments")
-      .expect(200)
-      .then(({body}) => {
-        expect(body.comments).toHaveLength(11)
-        body.comments.forEach((comment) => {
-        expect(comment).toMatchObject({
-            comment_id: expect.any(Number),
-            votes: expect.any(Number),
-            created_at: expect.any(String),
-            author: expect.any(String),
-            body: expect.any(String),
-            article_id: expect.any(Number),
-            });
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({body}) => {
+          expect(body.comments).toHaveLength(11)
+          body.comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: expect.any(Number),
         });
       });
+    });
   });
   test("status 200: responds with all comments for requested article with the most recent comments first", () => {
     return request(app)
-    .get("/api/articles/1/comments")
-    .expect(200)
-    .then(( {body}) => {
-      expect(body.comments).toBeSortedBy("created_at", {descending: true})
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(( {body}) => {
+        expect(body.comments).toBeSortedBy("created_at", {descending: true})
     });
   });
   test("status 404: when passed a valid number but does not exist in the db", () => {
