@@ -10,8 +10,8 @@ const { getApi,
     postComment,
     updateArticleById, 
     deleteComment,
-    getUSersById,
-    getUsersById} = require("./controllers/controllers");
+    getUsersById,
+    updateCommentById} = require("./controllers/controllers");
 
 app.use(express.json());
 
@@ -32,6 +32,8 @@ app.get("/api/articles/:article_id/comments", getArticleComments);
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.patch("/api/articles/:article_id", updateArticleById);
+
+app.patch("/api/comments/:comment_id", updateCommentById);
 
 app.delete("/api/comments/:comment_id", deleteComment);
 

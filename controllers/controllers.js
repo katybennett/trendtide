@@ -1,6 +1,6 @@
 const data = require("../db/data/test-data");
 const endpointsJson = require("../endpoints.json");
-const { validateComment, validateUpdateArticleVoteCount } = require("../validators/validators")
+const { validateComment, validateUpdateVoteCount } = require("../validators/validators")
 const { selectTopics,
     selectArticles,
     selectUsers, 
@@ -9,7 +9,8 @@ const { selectTopics,
     insertComment,
     updateArticleVoteCount, 
     deleteCommentById,
-    selectUsersById} = require("../model/model");
+    selectUsersById,
+    updateCommentVoteCount} = require("../model/model");
 
 module.exports.getApi = (req, res) => {
     res.status(200).send({ endpoints: endpointsJson });
@@ -108,7 +109,7 @@ module.exports.updateArticleById = (req, res, next) => {
 
     const { article_id } = req.params;
     const { inc_votes } = req.body;
-    const errors = validateUpdateArticleVoteCount(inc_votes);
+    const errors = validateUpdateVoteCount(inc_votes);
 
     if (errors.length > 0) {
         res.status(400).send({ errors });
@@ -122,6 +123,27 @@ module.exports.updateArticleById = (req, res, next) => {
         });
     };
 };
+
+
+module.exports.updateCommentById = (req, res, next) => {
+
+    const { comment_id } = req.params;
+    const { inc_votes } = req.body;
+    const errors = validateUpdateVoteCount(inc_votes);
+
+    if (errors.length > 0) {
+        res.status(400).send({ errors });
+    } else {
+        updateCommentVoteCount(inc_votes, comment_id)
+        .then((updatedComment) => {
+            res.status(200).send( { updatedComment } )
+        })
+        .catch((err) => {
+            next(err);
+        });
+    };
+};
+
 
 module.exports.deleteComment = (req, res, next) => {
 

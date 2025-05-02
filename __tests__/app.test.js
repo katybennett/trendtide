@@ -562,6 +562,99 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
+describe("PATCH /api/comments/:comment_id", () => {
+  test("status 200: response with updated comment by increasing the comment's votes by correct amount", () => {
+    const patchObj = {
+      inc_votes: 10
+    };
+    return request(app)
+      .patch("/api/comments/2")
+      .send(patchObj)
+      .expect(200)
+      .then(({body}) => {
+        expect(body.updatedComment.votes).toBe(24);
+        expect(body.updatedComment.comment_id).toBe(2);
+    });
+  });
+  test("status 200: response with updated comment by decreasing the comment's votes by correct amount", () => {
+    const patchObj = {
+      inc_votes: -10
+    };
+    return request(app)
+      .patch("/api/comments/2")
+      .send(patchObj)
+      .expect(200)
+      .then(({body}) => {
+        expect(body.updatedComment.votes).toBe(4);
+        expect(body.updatedComment.comment_id).toBe(2);
+    });
+  });
+  test("status 404: when passed a valid number in the path but comment does not exist in the db", () => {
+    const patchObj = {
+      inc_votes: 10
+    }
+    return request(app)
+      .patch("/api/comments/9876")
+      .send(patchObj)
+      .expect(404)
+      .then(({body}) => {
+          expect(body.msg).toBe("No comment found under comment id: 9876")
+    });
+  });
+
+  test("status 400: when passed an invalid data type in the path as comment id", () => {
+    const patchObj = {
+      inc_votes: 1
+    }
+    return request(app)
+      .patch("/api/comments/hello")
+      .send(patchObj)
+      .expect(400)
+      .then(({body}) => {
+          expect(body.msg).toBe("Bad Request!")
+    });
+  });
+  describe("status 400: responds with correct error message when attempting to PATCH", () => {
+    test("with valid body field but incorrent field that is not an integer", () => {
+      const patchObj = {
+        inc_votes: "8.4"
+      };
+      return request(app)
+        .patch("/api/comments/2")
+        .send(patchObj)
+        .expect(400)
+        .then(({body}) => {
+          expect(body.updatedComment).toBe(undefined);
+          expect(body.errors).toEqual(["inc_vote must be an integer not equal to 0"])
+      });
+    });
+    test("with valid body field but incorrent field of value cero", () => {
+      const patchObj = {
+        inc_votes: "0"
+      };
+      return request(app)
+        .patch("/api/comments/2")
+        .send(patchObj)
+        .expect(400)
+        .then(({body}) => {
+          expect(body.updatedComment).toBe(undefined);
+          expect(body.errors).toEqual(["inc_vote must be an integer not equal to 0"])
+      });
+    });
+    test("with a body that does not contain any field", () => {
+      const patchObj = {};
+      return request(app)
+        .patch("/api/comments/2")
+        .send(patchObj)
+        .expect(400)
+        .then(({body}) => {
+          expect(body.updatedComment).toBe(undefined);
+          expect(body.errors).toEqual(["inc_vote must be an integer not equal to 0"])
+      });
+    });
+  });
+});
+
 describe("DELETE /api/comments/:comment_id", () => {
   test("status 204: does not send a response body", () => {
     return request(app)
