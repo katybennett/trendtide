@@ -13,7 +13,7 @@ module.exports.validateComment = (username, body) => {
 
 };
 
-module.exports.validateUpdateArticleVoteCount = (inc_votes) => {
+module.exports.validateUpdateVoteCount = (inc_votes) => {
 
     const errors = [];
 
