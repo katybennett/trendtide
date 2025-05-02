@@ -1,5 +1,5 @@
 const { validateComment,
-    validateUpdateArticleVoteCount } = require("../validators/validators")
+    validateUpdateVoteCount } = require("../validators/validators")
 
 describe("validateComment function", () => {
 
@@ -26,22 +26,22 @@ describe("validateComment function", () => {
     });
 });
 
-describe("validateUpdateArticleVoteCount function", () => {
+describe("validateUpdateVoteCount function", () => {
 
     describe('should return correct error message', () => {
         test('if no argument passed', () => {
-            expect(validateUpdateArticleVoteCount()).toEqual(["inc_vote must be an integer not equal to 0"]);
+            expect(validateUpdateVoteCount()).toEqual(["inc_vote must be an integer not equal to 0"]);
         });
         test("if given cero as argument", () => {
             const input = 0;
             
-            const result = validateUpdateArticleVoteCount(input);
+            const result = validateUpdateVoteCount(input);
             expect(result).toEqual(["inc_vote must be an integer not equal to 0"]);
         });
         test("if NOT an integer is passed", () => {
             const input = 3.5
 
-            const result = validateUpdateArticleVoteCount(input);
+            const result = validateUpdateVoteCount(input);
             expect(result).toEqual(["inc_vote must be an integer not equal to 0"]);
         });
     });
