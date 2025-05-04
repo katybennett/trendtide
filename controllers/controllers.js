@@ -12,11 +12,11 @@ const { selectTopics,
     selectUsersById,
     updateCommentVoteCount} = require("../model/model");
 
-module.exports.getApi = (req, res) => {
+exports.getApi = (req, res) => {
     res.status(200).send({ endpoints: endpointsJson });
 };
 
-module.exports.getTopics = (req, res) => {
+exports.getTopics = (req, res) => {
     
     selectTopics().then(({ rows }) => {
         res.status(200).send({ topics: rows });
@@ -26,7 +26,7 @@ module.exports.getTopics = (req, res) => {
     });
 };
 
-module.exports.getUsers = (req, res) => {
+exports.getUsers = (req, res) => {
     
     selectUsers().then(({ rows }) => {
         res.status(200).send({ users: rows });
@@ -36,7 +36,7 @@ module.exports.getUsers = (req, res) => {
     });
 };
 
-module.exports.getUsersById = (req, res, next) => {
+exports.getUsersById = (req, res, next) => {
 
     const { username } = req.params;
 
@@ -49,7 +49,7 @@ module.exports.getUsersById = (req, res, next) => {
     });
 };
 
-module.exports.getArticles = (req, res, next) => {
+exports.getArticles = (req, res, next) => {
 
     const { sortBy, order, topic } = req.query;
 
@@ -61,7 +61,7 @@ module.exports.getArticles = (req, res, next) => {
     });
 };
 
-module.exports.getArticlesById = (req, res, next) => {
+exports.getArticlesById = (req, res, next) => {
 
     const { article_id } = req.params;
 
@@ -74,38 +74,40 @@ module.exports.getArticlesById = (req, res, next) => {
     });
 };
 
-module.exports.getArticleComments = (req, res, next) => {
-
-    const { article_id } = req.params;
-
-    selectArticleComments(article_id).then(({ rows }) => {
-        res.status(200).send({ comments: rows }); 
-    })
-    .catch((err) => {
-        next(err);
-    });
-};
-
-module.exports.postComment = (req, res, next) => {
+exports.getArticleComments = async (req, res, next) => {
     
     const { article_id } = req.params;
-    const { username, body } = req.body;
-    const errors = validateComment(username, body);
 
-    if (errors.length > 0) {
-        res.status(400).send({ errors });
-    } else {
-        insertComment(username, body, article_id)
-        .then((comment) => {
-            res.status(201).send( { comment })
-        })
-        .catch((err) => {
-            next(err);
-        });
+    try {
+        const comments = await selectArticleComments(article_id);
+        res.status(200).send({ comments });
+    }
+    catch (err) {
+        next(err);
     };
 };
 
-module.exports.updateArticleById = (req, res, next) => {
+exports.postComment = async (req, res, next) => {
+    
+    const { article_id } = req.params;
+    const { username, body } = req.body;
+
+    try {
+        const errors = validateComment(username, body);
+
+        if (errors.length > 0) {
+            res.status(400).send({ errors });
+        } else {
+            const comment = await insertComment(username, body, article_id);
+            res.status(201).send({ comment })
+        }
+    }
+    catch (err) {
+        next(err);
+    };
+};
+
+exports.updateArticleById = (req, res, next) => {
 
     const { article_id } = req.params;
     const { inc_votes } = req.body;
@@ -125,7 +127,7 @@ module.exports.updateArticleById = (req, res, next) => {
 };
 
 
-module.exports.updateCommentById = (req, res, next) => {
+exports.updateCommentById = (req, res, next) => {
 
     const { comment_id } = req.params;
     const { inc_votes } = req.body;
@@ -145,7 +147,7 @@ module.exports.updateCommentById = (req, res, next) => {
 };
 
 
-module.exports.deleteComment = (req, res, next) => {
+exports.deleteComment = (req, res, next) => {
 
     const { comment_id } = req.params;
 

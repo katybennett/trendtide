@@ -119,7 +119,7 @@ module.exports.selectArticleComments = (article_id) => {
                 msg: `No article found under article id: ${article_id}`
             });
         };
-        return result;
+        return result.rows;
     });    
 };
 
