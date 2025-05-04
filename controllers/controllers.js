@@ -4,74 +4,77 @@ const { validateComment, validateUpdateVoteCount } = require("../validators/vali
 const { selectTopics,
     selectArticles,
     selectUsers, 
-    selectArticlesById,
+    selectArticleById,
     selectArticleComments,
     insertComment,
     updateArticleVoteCount, 
     deleteCommentById,
-    selectUsersById,
+    selectUserById,
     updateCommentVoteCount} = require("../model/model");
 
 exports.getApi = (req, res) => {
     res.status(200).send({ endpoints: endpointsJson });
 };
 
-exports.getTopics = (req, res) => {
-    
-    selectTopics().then(({ rows }) => {
-        res.status(200).send({ topics: rows });
-    })
-    .catch((err) => {
+exports.getTopics = async (req, res, next) => {
+
+    try {
+        const topics = await selectTopics();
+        res.status(200).send({ topics });
+    } 
+    catch (err) {
         next(err);
-    });
+    };
 };
 
-exports.getUsers = (req, res) => {
-    
-    selectUsers().then(({ rows }) => {
-        res.status(200).send({ users: rows });
-    })
-    .catch((err) => {
+exports.getUsers = async (req, res, next) => {
+
+    try {
+        const users = await selectUsers();
+        res.status(200).send({ users });
+    }
+    catch (err) {
         next(err);
-    });
+    };
 };
 
-exports.getUsersById = (req, res, next) => {
+exports.getUserById = async (req, res, next) => {
 
     const { username } = req.params;
 
-    selectUsersById(username)
-    .then((user) => {
-        res.status(200).send(user)
-    })
-    .catch((err) => {
+    try {
+        const user = await selectUserById(username);
+        res.status(200).send(user);
+    }
+    catch (err) { 
         next(err);
-    });
+    };
 };
 
-exports.getArticles = (req, res, next) => {
+exports.getArticles = async (req, res, next) => {
 
     const { sortBy, order, topic } = req.query;
 
-    selectArticles(sortBy, order, topic).then(( articles ) => {
+    try {
+        const articles = await selectArticles(sortBy, order, topic);
         res.status(200).send({ articles });
-    })
-    .catch((err) => {
+    }
+    catch (err) { 
         next(err);
-    });
+    };
 };
 
-exports.getArticlesById = (req, res, next) => {
+exports.getArticleById = async (req, res, next) => {
 
     const { article_id } = req.params;
 
-    selectArticlesById(article_id)
-    .then((article) => {
-        res.status(200).send( { article })
-    })
-    .catch((err) => {
+    try {
+        const article = await selectArticleById(article_id);
+        res.status(200).send( { article });
+    }
+    catch (err) { 
         next(err);
-    });
+    };
 };
 
 exports.getArticleComments = async (req, res, next) => {
@@ -107,55 +110,54 @@ exports.postComment = async (req, res, next) => {
     };
 };
 
-exports.updateArticleById = (req, res, next) => {
+exports.updateArticleById = async (req, res, next) => {
 
     const { article_id } = req.params;
     const { inc_votes } = req.body;
-    const errors = validateUpdateVoteCount(inc_votes);
 
-    if (errors.length > 0) {
-        res.status(400).send({ errors });
-    } else {
-        updateArticleVoteCount(inc_votes, article_id)
-        .then((updatedArticle) => {
-            res.status(200).send( { updatedArticle } )
-        })
-        .catch((err) => {
-            next(err);
-        });
+    try {
+        const errors = validateUpdateVoteCount(inc_votes);
+
+        if (errors.length > 0) {
+            res.status(400).send({ errors });
+        } else {
+            const updatedArticle = await updateArticleVoteCount(inc_votes, article_id);
+            res.status(200).send( { updatedArticle } );
+        }
+    }
+    catch (err) {
+        next(err);
     };
 };
 
-
-exports.updateCommentById = (req, res, next) => {
+exports.updateCommentById = async (req, res, next) => {
 
     const { comment_id } = req.params;
     const { inc_votes } = req.body;
-    const errors = validateUpdateVoteCount(inc_votes);
 
-    if (errors.length > 0) {
-        res.status(400).send({ errors });
-    } else {
-        updateCommentVoteCount(inc_votes, comment_id)
-        .then((updatedComment) => {
+    try {
+        const errors = validateUpdateVoteCount(inc_votes);
+        if (errors.length > 0) {
+            res.status(400).send({ errors });
+        } else {
+            const updatedComment = await updateCommentVoteCount(inc_votes, comment_id);
             res.status(200).send( { updatedComment } )
-        })
-        .catch((err) => {
-            next(err);
-        });
+        }
+    }
+    catch (err) {
+        next(err);
     };
 };
 
-
-exports.deleteComment = (req, res, next) => {
+exports.deleteComment = async (req, res, next) => {
 
     const { comment_id } = req.params;
 
-    deleteCommentById(comment_id)
-    .then(() => {
-        res.status(204).send()
-    })
-    .catch((err) => {
-        next(err)
-    });   
+    try {
+        const result = await deleteCommentById(comment_id);
+        res.status(204).send();
+    }
+    catch (err) {
+        next(err);
+    };
 };
