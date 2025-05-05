@@ -448,6 +448,103 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
 });
 
+describe("POST /api/articles", () => {
+  test("status 201: responds when newly posted article", () => {
+    const postArt = {
+      author: "butter_bridge",
+      title: "An article tittle here",
+      topic: "mitch",
+      body: "A body article here",
+      article_img_url: "http://images.pexels.com/photo/1453",
+    };
+    return request(app)
+        .post("/api/articles")
+        .send(postArt)
+        .expect(201)
+        .then(({ body }) => {
+          console.log("BODY", body)
+            expect(body.article).toEqual({
+                article_id: 14,
+                author: "butter_bridge",
+                title: expect.any(String),
+                body: expect.any(String),
+                topic: "mitch",
+                votes: expect.any(Number),
+                comment_count: expect.any(Number),
+                created_at: expect.any(String),
+                article_img_url: expect.any(String),
+        });
+    });
+  });
+
+  test("status 400: responds when author doesn't exist", () => {
+    const postArt = {
+      author: "non existent author",
+      title: "An article tittle here",
+      topic: "mitch",
+      body: "A body article here",
+      article_img_url: "http://images.pexels.com/photo/1453",
+    };
+    return request(app)
+        .post("/api/articles")
+        .send(postArt)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.article).toBe(undefined);
+            expect(body.msg).toBe("Bad Request!")
+    });
+  });
+
+
+  test("status 400: Bad Request responds when invalid data is passed into post object", () => {
+    const postArt = {
+      author: 123,
+      title: "An article tittle here",
+      topic: "mitch",
+      body: "A body article here",
+      article_img_url: "http://images.pexels.com/photo/1453",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(postArt)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.article).toBe(undefined);
+        expect(body.msg).toBe("Bad Request!")
+    });
+  });
+
+  // describe("status 400: responds with correct errors messages", () => {
+  //   test("if username is missed, responds username is required", () => {
+  //     const postObj = {
+  //       body: 'Excelent Article!',
+  //     }; 
+  //     return request(app)
+  //       .post("/api/articles")
+  //       .send(postObj)
+  //       .expect(400)
+  //       .then(({ body }) => {
+  //         expect(body.comment).toBe(undefined);
+  //         expect(body.msg).toBe("Invalid Request: username is required");
+  //     });
+  //   });
+  
+  //   test("if body is missed, responds body is required", () => {
+  //     const postObj = {
+  //       username: 'icellusedkars',
+  //     };
+  //     return request(app)
+  //       .post("/api/articles")
+  //       .send(postObj)
+  //       .expect(400)
+  //       .then(({ body }) => {
+  //         expect(body.comment).toBe(undefined);
+  //         expect(body.msg).toBe("Invalid Request: body is required");
+  //     });
+  //   });
+  // });
+});
+
 describe("PATCH /api/articles/:article_id", () => {
   test("status 200: response with updated article by increasing the article's votes by correct amount", () => {
     const patchObj = {

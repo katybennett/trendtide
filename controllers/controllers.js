@@ -10,7 +10,9 @@ const { selectTopics,
     updateArticleVoteCount, 
     deleteCommentById,
     selectUserById,
-    updateCommentVoteCount} = require("../model/model");
+    updateCommentVoteCount,
+    insertArticle} = require("../model/model");
+const { InvalidRequestError } = require("../validators/InvalidRequestError");
 
 exports.getApi = (req, res) => {
     res.status(200).send({ endpoints: endpointsJson });
@@ -102,6 +104,20 @@ exports.postComment = async (req, res, next) => {
     }
     catch (err) {
         next(err);
+    };
+};
+
+exports.postArticle = async (req, res, next) => {
+
+    const { author, title, topic, body, article_img_url } = req.body;
+
+    try {
+        const article = await insertArticle(author, title, topic, body, article_img_url);
+        res.status(201).send({ article })
+    }
+    catch (err) {
+        console.log("ERRCOTR", err)
+        next(err)
     };
 };
 
