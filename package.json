@@ -1,7 +1,7 @@
 {
-  "name": "be-nc-news",
+  "name": "trendtide",
   "version": "1.0.0",
-  "description": "bc-nc-news",
+  "description": "trendtide",
   "main": "listen.js",
   "scripts": {
     "setup-dbs": "psql -f ./db/setup-dbs.sql",
