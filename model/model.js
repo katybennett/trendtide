@@ -3,16 +3,18 @@ const db = require("../db/connection");
 module.exports.selectTopics = () => {
     return db
     .query("SELECT * FROM topics")
+    .then(({ rows }) => rows)
 };
 
   
 module.exports.selectUsers = () => {
     return db
     .query("SELECT * FROM users")
+    .then(({ rows }) => rows)
 };
 
 
-module.exports.selectUsersById = (username) => {
+module.exports.selectUserById = (username) => {
     return db
     .query("SELECT * FROM users WHERE username = $1", [username])
     .then(({ rows }) => {
@@ -76,7 +78,7 @@ let queryString = `SELECT
 };
  
 
-module.exports.selectArticlesById = (article_id) => {
+module.exports.selectArticleById = (article_id) => {
     
 let queryString = `SELECT
     a.author,
@@ -119,7 +121,7 @@ module.exports.selectArticleComments = (article_id) => {
                 msg: `No article found under article id: ${article_id}`
             });
         };
-        return result;
+        return result.rows;
     });    
 };
 

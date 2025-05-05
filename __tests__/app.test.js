@@ -37,7 +37,7 @@ describe("GET /api/topics", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
-      .then(({body}) => {    
+      .then(({ body }) => { 
         expect(body.topics).toHaveLength(3)
         body.topics.forEach((topic) => {
         expect(topic).toMatchObject({
@@ -312,6 +312,7 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/hello")
       .expect(400)
       .then(({body}) => {
+          console.log("BODY", body)
           expect(body.msg).toBe("Bad Request!")
       });
   });
@@ -322,7 +323,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
-        .then(({body}) => {
+        .then(({ body }) => {
           expect(body.comments).toHaveLength(11)
           body.comments.forEach((comment) => {
           expect(comment).toMatchObject({
@@ -426,10 +427,8 @@ describe("POST /api/articles/:article_id/comments", () => {
         .send(postObj)
         .expect(400)
         .then(({ body }) => {
-            expect(body.comment).toBe(undefined);
-            expect(body.errors).toEqual([
-              'username is required',
-        ]);
+          expect(body.comment).toBe(undefined);
+          expect(body.msg).toBe("Invalid Request: username is required");
       });
     });
   
@@ -442,10 +441,8 @@ describe("POST /api/articles/:article_id/comments", () => {
         .send(postObj)
         .expect(400)
         .then(({ body }) => {
-            expect(body.comment).toBe(undefined);
-            expect(body.errors).toEqual([
-              'body is required',
-        ]);
+          expect(body.comment).toBe(undefined);
+          expect(body.msg).toBe("Invalid Request: body is required");
       });
     });
   });
@@ -531,8 +528,8 @@ describe("PATCH /api/articles/:article_id", () => {
         .send(patchObj)
         .expect(400)
         .then(({body}) => {
-          expect(body.updatedArticle).toBe(undefined);
-          expect(body.errors).toEqual(["inc_vote must be an integer not equal to 0"])
+          expect(body.comment).toBe(undefined);
+          expect(body.msg).toBe("Invalid Request: Vote is not valid");
       });
     });
     test("with valid body field but incorrent field of value cero", () => {
@@ -544,8 +541,8 @@ describe("PATCH /api/articles/:article_id", () => {
         .send(patchObj)
         .expect(400)
         .then(({body}) => {
-          expect(body.updatedArticle).toBe(undefined);
-          expect(body.errors).toEqual(["inc_vote must be an integer not equal to 0"])
+          expect(body.comment).toBe(undefined);
+          expect(body.msg).toBe("Invalid Request: Vote is not valid");
       });
     });
     test("with a body that does not contain any field", () => {
@@ -555,8 +552,8 @@ describe("PATCH /api/articles/:article_id", () => {
         .send(patchObj)
         .expect(400)
         .then(({body}) => {
-          expect(body.updatedArticle).toBe(undefined);
-          expect(body.errors).toEqual(["inc_vote must be an integer not equal to 0"])
+          expect(body.comment).toBe(undefined);
+          expect(body.msg).toBe("Invalid Request: Vote is not valid");
       });
     });
   });
@@ -624,8 +621,8 @@ describe("PATCH /api/comments/:comment_id", () => {
         .send(patchObj)
         .expect(400)
         .then(({body}) => {
-          expect(body.updatedComment).toBe(undefined);
-          expect(body.errors).toEqual(["inc_vote must be an integer not equal to 0"])
+          expect(body.comment).toBe(undefined);
+          expect(body.msg).toBe("Invalid Request: Vote is not valid");
       });
     });
     test("with valid body field but incorrent field of value cero", () => {
@@ -637,8 +634,8 @@ describe("PATCH /api/comments/:comment_id", () => {
         .send(patchObj)
         .expect(400)
         .then(({body}) => {
-          expect(body.updatedComment).toBe(undefined);
-          expect(body.errors).toEqual(["inc_vote must be an integer not equal to 0"])
+          expect(body.comment).toBe(undefined);
+          expect(body.msg).toBe("Invalid Request: Vote is not valid");
       });
     });
     test("with a body that does not contain any field", () => {
@@ -648,8 +645,8 @@ describe("PATCH /api/comments/:comment_id", () => {
         .send(patchObj)
         .expect(400)
         .then(({body}) => {
-          expect(body.updatedComment).toBe(undefined);
-          expect(body.errors).toEqual(["inc_vote must be an integer not equal to 0"])
+          expect(body.comment).toBe(undefined);
+          expect(body.msg).toBe("Invalid Request: Vote is not valid");
       });
     });
   });
