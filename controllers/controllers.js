@@ -96,14 +96,9 @@ exports.postComment = async (req, res, next) => {
     const { username, body } = req.body;
 
     try {
-        const errors = validateComment(username, body);
-
-        if (errors.length > 0) {
-            res.status(400).send({ errors });
-        } else {
-            const comment = await insertComment(username, body, article_id);
-            res.status(201).send({ comment })
-        }
+        validateComment(username, body);
+        const comment = await insertComment(username, body, article_id);
+        res.status(201).send({ comment })
     }
     catch (err) {
         next(err);
@@ -116,14 +111,9 @@ exports.updateArticleById = async (req, res, next) => {
     const { inc_votes } = req.body;
 
     try {
-        const errors = validateUpdateVoteCount(inc_votes);
-
-        if (errors.length > 0) {
-            res.status(400).send({ errors });
-        } else {
-            const updatedArticle = await updateArticleVoteCount(inc_votes, article_id);
-            res.status(200).send( { updatedArticle } );
-        }
+        validateUpdateVoteCount(inc_votes);
+        const updatedArticle = await updateArticleVoteCount(inc_votes, article_id);
+        res.status(200).send( { updatedArticle } );
     }
     catch (err) {
         next(err);
@@ -136,13 +126,10 @@ exports.updateCommentById = async (req, res, next) => {
     const { inc_votes } = req.body;
 
     try {
-        const errors = validateUpdateVoteCount(inc_votes);
-        if (errors.length > 0) {
-            res.status(400).send({ errors });
-        } else {
-            const updatedComment = await updateCommentVoteCount(inc_votes, comment_id);
-            res.status(200).send( { updatedComment } )
-        }
+        validateUpdateVoteCount(inc_votes);
+        const updatedComment = await updateCommentVoteCount(inc_votes, comment_id);
+        res.status(200).send( { updatedComment } )
+        
     }
     catch (err) {
         next(err);

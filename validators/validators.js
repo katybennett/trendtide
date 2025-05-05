@@ -1,4 +1,6 @@
-module.exports.validateComment = (username, body) => {
+const { InvalidRequestError } = require('./InvalidRequestError');
+
+exports.validateComment = (username, body) => {
 
     const errors = [];
 
@@ -9,18 +11,20 @@ module.exports.validateComment = (username, body) => {
         errors.push("body is required")
     }
 
-    return errors;
-
+    if (errors.length > 0) {
+        throw new InvalidRequestError(errors);
+    }
 };
 
-module.exports.validateUpdateVoteCount = (inc_votes) => {
+exports.validateUpdateVoteCount = (inc_votes) => {
 
     const errors = [];
 
     if (inc_votes === 0 || !Number.isInteger(inc_votes)) {
-        errors.push("inc_vote must be an integer not equal to 0")
+        errors.push("Vote is not valid")
     };
 
-    return errors;
-
+    if (errors.length > 0) {
+        throw new InvalidRequestError(errors);
+    }
 };
