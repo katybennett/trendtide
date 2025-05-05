@@ -1,4 +1,4 @@
-NC News 
+trendtide
 
 link hosted version: https://nc-news-oy8f.onrender.com/api
 
