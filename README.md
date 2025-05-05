@@ -1,6 +1,6 @@
 trendtide
 
-link hosted version: https://nc-news-oy8f.onrender.com/api
+link hosted version: https://trendtidenews.onrender.com
 
 🚀 Project Overview
 
