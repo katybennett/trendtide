@@ -137,6 +137,19 @@ module.exports.insertComment = (username, body, article_id) => {
     });
 };
 
+module.exports.insertArticle = (author, title, topic, body, article_img_url) => {
+    return db
+    .query(
+        "INSERT INTO articles (author, title, topic, body, article_img_url) VALUES ($1, $2, $3, $4, $5) RETURNING article_id",
+        [author, title, topic, body, article_img_url] 
+    )
+    .then((result) => {
+        console.log("RESULT", result.rows)
+        const article_id = result.rows[0].article_id;
+        const article = this.selectArticleById(article_id);
+        return article;
+    });
+};
 
 module.exports.updateArticleVoteCount = (inc_votes, article_id) => {
     return db
