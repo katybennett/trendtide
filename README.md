@@ -2,11 +2,11 @@ trendtide
 
 link hosted version: https://trendtidenews.onrender.com
 
-🚀 Project Overview
+Project Overview
 
 It is a full-stack web application built with Node.js, Express and PostgreSQL. It allows users to check articles and interact with content by voting, commenting, etc. The project was developed as part of the Northcoders bootcamp, and demonstrates key skills in RESTful API design, database management, and backend development.
 
-🛠️ Technologies Used
+Technologies Used
 Node.js
 PostgreSQL
 Express.js
@@ -14,7 +14,7 @@ Jest / Supertest (for testing)
 dotenv
 
 
-📦 Getting Started
+Getting Started
 To get a local copy up and running, follow these steps:
 1. Clone the repository
 git clone
