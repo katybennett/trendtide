@@ -1,4 +1,4 @@
-# trendtide
+# Trendtide News
 
 link hosted version: https://trendtidenews.onrender.com
 
