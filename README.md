@@ -4,7 +4,9 @@ link hosted version: https://trendtidenews.onrender.com
 
 # Project Overview
 
-It is a full-stack web application built with Node.js, Express and PostgreSQL. It allows users to check articles and interact with content by voting, commenting, etc. The project was developed as part of the Northcoders bootcamp, and demonstrates key skills in RESTful API design, database management, and backend development.
+Web application built with Node.js, Express and PostgreSQL. It will allows users to check articles and interact with content by voting, commenting, etc. The project is being developed as part of the Northcoders bootcamp, and demonstrates key skills in RESTful API design, database management, and backend development.
+
+>>>Front End developmetn comming soon!
 
 # 🛠️ Technologies Used
 Node.js
