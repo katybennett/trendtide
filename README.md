@@ -1,6 +1,6 @@
 # Trendtide News
 
-🔗link hosted version: https://trendtidenews.onrender.com
+🔗 link hosted version: https://trendtidenews.onrender.com
 
 ## Project Overview
 
@@ -33,10 +33,12 @@ npm install
 
 ### 3. Create environment variables
 You will need two .env files for your databases, one for development and one for testing.
+```
 .env.development
 PGDATABASE= nc_news
 .env.test
 PGDATABASE= nc_news_test
+```
 
 ### 4. Set up the local database
 ```
