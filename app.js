@@ -3,6 +3,9 @@ const app = express();
 const db = require("./db/connection");
 const apiRouter = require('./routes/api-router');
 const { InvalidRequestError } = require("./validators/InvalidRequestError");
+const cors = require('cors');
+
+app.use(cors());
 
 app.use(express.json());
 
