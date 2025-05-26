@@ -1,6 +1,6 @@
 # Trendtide News
 
-🔗 Demo: https://trendtidenews.onrender.com
+🔗 Demo: https://trendtidenews.onrender.com/api
 
 ## Project Overview
 
