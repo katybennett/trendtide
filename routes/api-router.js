@@ -7,10 +7,9 @@ const usersRouter = require("./users-router");
 
 apiRouter.get("/", getApi);
 
-apiRouter.use('/users', usersRouter);
-apiRouter.use('/topics', topicsRouter);
-apiRouter.use('/articles', articlesRouter);
-apiRouter.use('/comments', commentsRouter);
+apiRouter.use("/users", usersRouter);
+apiRouter.use("/topics", topicsRouter);
+apiRouter.use("/articles", articlesRouter);
+apiRouter.use("/comments", commentsRouter);
 
 module.exports = apiRouter;
-

@@ -1,4 +1,11 @@
-const { getArticles, getArticleById, getArticleComments, postComment, updateArticleById, postArticle } = require("../controllers/controllers");
+const {
+  getArticles,
+  getArticleById,
+  getArticleComments,
+  postComment,
+  updateArticleById,
+  postArticle,
+} = require("../controllers/controllers");
 const articlesRouter = require("express").Router();
 
 articlesRouter.get("/", getArticles);

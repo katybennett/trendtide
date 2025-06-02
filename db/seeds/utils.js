@@ -5,7 +5,6 @@ exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   return { created_at: new Date(created_at), ...otherProperties };
 };
 
-
 exports.createArticlesLookupObject = (articlesData) => {
   if (articlesData.length === 0) {
     return {};
@@ -18,4 +17,3 @@ exports.createArticlesLookupObject = (articlesData) => {
 
   return lookupObj;
 };
-

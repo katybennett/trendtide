@@ -1,18 +1,20 @@
-const db = require("../connection")
-const format = require('pg-format');
-const { convertTimestampToDate, createArticlesLookupObject } = require("./utils");
+const db = require("../connection");
+const format = require("pg-format");
+const {
+  convertTimestampToDate,
+  createArticlesLookupObject,
+} = require("./utils");
 
 const seed = async ({ topicData, userData, articleData, commentData }) => {
-
   // Drop existing tables
 
-  await db.query(`DROP TABLE IF EXISTS comments;`)
+  await db.query(`DROP TABLE IF EXISTS comments;`);
 
-  await db.query(`DROP TABLE IF EXISTS articles;`)
-  
-  await db.query(`DROP TABLE IF EXISTS users;`)
-  
-  await db.query(`DROP TABLE IF EXISTS topics;`)
+  await db.query(`DROP TABLE IF EXISTS articles;`);
+
+  await db.query(`DROP TABLE IF EXISTS users;`);
+
+  await db.query(`DROP TABLE IF EXISTS topics;`);
 
   // Create new tables
 
@@ -51,31 +53,23 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
   // Insert data
 
   const formattedTopicsData = topicData.map((topic) => {
-    return [
-      topic.slug,
-      topic.description,
-      topic.img_url,
-    ];
+    return [topic.slug, topic.description, topic.img_url];
   });
 
   const insertTopicDataQuery = format(
-    'INSERT INTO topics (slug, description, img_url) VALUES %L', 
-    formattedTopicsData
+    "INSERT INTO topics (slug, description, img_url) VALUES %L",
+    formattedTopicsData,
   );
 
   await db.query(insertTopicDataQuery);
 
   const formattedUsersData = userData.map((user) => {
-    return [
-      user.username,
-      user.name,
-      user.avatar_url,
-    ];
+    return [user.username, user.name, user.avatar_url];
   });
 
   const insertUserDataQuery = format(
-    'INSERT INTO users (username, name, avatar_url) VALUES %L', 
-    formattedUsersData
+    "INSERT INTO users (username, name, avatar_url) VALUES %L",
+    formattedUsersData,
   );
 
   await db.query(insertUserDataQuery);
@@ -94,10 +88,10 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
   });
 
   const insertArticlesQuery = format(
-    'INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *;', 
-    formattedArticlesData
+    "INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *;",
+    formattedArticlesData,
   );
-      
+
   const insertArticlesResult = await db.query(insertArticlesQuery);
   const articlesLookup = createArticlesLookupObject(insertArticlesResult.rows);
 
@@ -114,13 +108,11 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
   });
 
   const insertCommentsQuery = format(
-    'INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L', 
-    formattedCommentsData
+    "INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L",
+    formattedCommentsData,
   );
-      
-  await db.query(insertCommentsQuery);
-    
-};
 
+  await db.query(insertCommentsQuery);
+};
 
 module.exports = seed;
