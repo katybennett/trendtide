@@ -53,10 +53,10 @@ exports.getUserById = async (req, res, next) => {
 };
 
 exports.getArticles = async (req, res, next) => {
-  const { sortBy, order, topic } = req.query;
+  const { sortBy, order, topic, limit, offset } = req.query;
 
   try {
-    const articles = await selectArticles(sortBy, order, topic);
+    const articles = await selectArticles({ sortBy, order, topic, limit, offset });
     res.status(200).send({ articles });
   } catch (err) {
     next(err);
@@ -107,7 +107,7 @@ exports.postArticle = async (req, res, next) => {
       title,
       topic,
       body,
-      article_img_url,
+      article_img_url
     );
     res.status(201).send({ article });
   } catch (err) {

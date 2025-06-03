@@ -250,6 +250,28 @@ describe("GET /api/articles", () => {
           });
       });
     });
+    describe("Limit - offset", () => {
+      test("Can return the three most recent articles", () => {
+        return request(app)
+          .get("/api/articles?sortBy=created_at&order=desc&limit=3")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).toHaveLength(3);
+            expect(body.articles).toBeSortedBy("created_at", {
+              descending: true,
+            });
+          });
+      });
+      test("can return the top 3 most votes articles", () => {
+        return request(app)
+          .get("/api/articles?sortBy=votes&order=desc&limit=3")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).toHaveLength(3);
+            expect(body.articles).toBeSortedBy("votes", { descending: true });
+          });
+      });
+    });
     test("status 404: when passed an invalid sort query", () => {
       return request(app)
         .get("/api/articles?sortBy=hello&order=desc")

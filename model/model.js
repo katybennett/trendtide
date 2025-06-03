@@ -22,11 +22,13 @@ module.exports.selectUserById = (username) => {
     });
 };
 
-module.exports.selectArticles = (
+module.exports.selectArticles = ({
   sortBy = "created_at",
   order = "desc",
   topic = null,
-) => {
+  limit = null,
+  offset = 0,
+}) => {
   const validSortFields = [
     "created_at",
     "article_id",
@@ -53,11 +55,16 @@ module.exports.selectArticles = (
     });
   }
 
-  let where = "";
+  let whereSql = "";
   const queryParams = [];
   if (topic) {
-    where += ` WHERE a.topic = $1`;
+    whereSql += ` WHERE a.topic = $1`;
     queryParams.push(topic);
+  }
+
+  let limitOffsetSql = "";
+  if (limit !== null) {
+    limitOffsetSql = ` LIMIT ${limit} OFFSET ${offset}`;
   }
 
   let queryString = `SELECT
@@ -72,9 +79,11 @@ module.exports.selectArticles = (
     FROM articles AS a
     LEFT JOIN comments AS c
     ON c.article_id = a.article_id
-    ${where}
+    ${whereSql}
     GROUP BY a.article_id
-    ORDER BY ${sortBy} ${order}`;
+    ORDER BY ${sortBy} ${order}
+    ${limitOffsetSql}
+    `;
 
   return db.query(queryString, queryParams).then(({ rows }) => rows);
 };
@@ -111,7 +120,7 @@ module.exports.selectArticleComments = (article_id) => {
   return db
     .query(
       "SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC",
-      [article_id],
+      [article_id]
     )
     .then((result) => {
       if (!result.rows.length) {
@@ -128,7 +137,7 @@ module.exports.insertComment = (username, body, article_id) => {
   return db
     .query(
       "INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *",
-      [username, body, article_id],
+      [username, body, article_id]
     )
     .then((result) => {
       return result.rows[0];
@@ -140,12 +149,12 @@ module.exports.insertArticle = (
   title,
   topic,
   body,
-  article_img_url,
+  article_img_url
 ) => {
   return db
     .query(
       "INSERT INTO articles (author, title, topic, body, article_img_url) VALUES ($1, $2, $3, $4, $5) RETURNING article_id",
-      [author, title, topic, body, article_img_url],
+      [author, title, topic, body, article_img_url]
     )
     .then((result) => {
       console.log("RESULT", result.rows);
@@ -163,7 +172,7 @@ module.exports.updateArticleVoteCount = (inc_votes, article_id) => {
         SET votes = votes + $1
         WHERE article_id = $2
         RETURNING *;`,
-      [inc_votes, article_id],
+      [inc_votes, article_id]
     )
     .then(({ rows }) => {
       if (!rows.length) {
@@ -184,7 +193,7 @@ module.exports.updateCommentVoteCount = (inc_votes, comment_id) => {
         SET votes = votes + $1
         WHERE comment_id = $2
         RETURNING *;`,
-      [inc_votes, comment_id],
+      [inc_votes, comment_id]
     )
     .then(({ rows }) => {
       if (!rows.length) {
@@ -204,7 +213,7 @@ module.exports.deleteCommentById = (comment_id) => {
         DELETE FROM comments
         WHERE comment_id = $1 
         RETURNING *;`,
-      [comment_id],
+      [comment_id]
     )
     .then(({ rows }) => {
       if (!rows.length) {
