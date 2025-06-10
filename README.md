@@ -6,9 +6,6 @@
 
 Web application built with Node.js, Express and PostgreSQL. It will allows users to check articles and interact with content by voting, commenting, etc. The project is being developed as part of the Northcoders bootcamp, and demonstrates key skills in RESTful API design, database management, and backend development.
 
-> [!NOTE]
-> Front End development comming soon!
-
 ## 🛠️ Technologies Used
 
 - Node.js
